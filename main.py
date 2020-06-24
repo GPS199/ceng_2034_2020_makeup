@@ -26,7 +26,7 @@ import psutil #to learn memory and cpu usage
 import subprocess # to clean orphans
 import sys #to animation
 import signal 
-
+import shutil #for removing file
 
 end_import = time.time()
 
@@ -100,6 +100,12 @@ def changeDirectory(getDirectory):  # Change Directory
 
 def filesinFolder():  # Find count of file in folder that download images.
     print('Images folder contains', len(os.listdir(initial_directory)), 'files.')
+  
+  
+  
+def remove_file():
+  shutil.rmtree(source)
+
 
 
 
@@ -510,7 +516,7 @@ print("\n \n  Please enter the command number to execute the script: \n"
       " 11 : Memory Information.\n"
       " 12 : Print Elapsed Time of Every Programs . \n"
       " 13 : Is Memory Available , Wait it. \n"
-      " 14 : End \n"
+      " 14 : Remove File \n"
 
       " 0 : Exit the script.\n")
 print("------------------------------------------------------------\n")
@@ -781,7 +787,8 @@ while(True):
   elif(command=="14"):
     animation()
     print("\n")
-    print("    THE     END     ")
+    remove_file()
+    print(" File Removed.")
 
 
   elif(command=="0"):
