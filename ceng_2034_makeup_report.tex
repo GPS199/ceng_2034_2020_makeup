@@ -1,0 +1,808 @@
+\documentclass[onecolumn]{article}
+%\usepackage{url}
+%\usepackage{algorithmic}
+\usepackage[a4paper]{geometry}
+\usepackage{datetime}
+\usepackage[margin=2em, font=small,labelfont=it]{caption}
+\usepackage{graphicx}
+\usepackage{mathpazo} % use palatino
+\usepackage[scaled]{helvet} % helvetica
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{subfigure}
+
+
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2
+}
+
+% Letterspacing macros
+\newcommand{\spacecaps}[1]{\textls[200]{\MakeUppercase{#1}}}
+\newcommand{\spacesc}[1]{\textls[50]{\textsc{\MakeLowercase{#1}}}}
+
+\title{\spacecaps{Assignment Report 2: Child Process and Multiprocessing}\\ \normalsize \spacesc{CENG2034, Operating Systems} }
+
+\author{Gizem PESEN\\gizempesen@posta.mu.edu.tr\\github: \textbf{https://github.com/GPS199}}
+%\date{\today\\\currenttime}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+Today, this is the world of technology . Technology is developing, the needs have increased. The development of processor and operating system architectures respond to the needs of the age. So  we , the programmers  need to understand how operating system works. we need to understand creating child process in the operating system. Understanding the multi processing is important to understand the computer. 
+\end{abstract}
+
+
+\section{Introduction}
+Purpose of this report is learning how to use \textbf{multiprocessing} in our codes and how it will be increased our script performance.
+
+\section{General Information}
+
+\subsubsection{My device: }
+I generally used virtual environment but I did some process in my device that use windows. \\ \\
+System Version: Windows 10 \\
+ CPU: Intel(R) Core(TM) i5-7200U  \\
+ Ram: 8 GB  \\
+ 64 bit processor \\
+ 
+\subsubsection{My Virtual Environment:  }
+Vmware Workstation 15.5 \\ 
+Virtual Environment: Ubuntu 20.04  \\  
+Memory:  2 GB \\
+Processors: 1 \\
+
+
+\subsubsection{Repl.it (Online Virtual Environment):}
+Kernel version: Linux 5.4.0-1009
+ 
+\subsubsection{Language and Ide:}
+Python  3.8.0 \\
+PyCharm Community Edition 2020.1.2
+
+\subsubsection{Used Libraries: }
+\textbf{os, os.path}
+to create child and parent process,
+to check path exist or not  \\ 
+\textbf{requests}: to download images\\ 
+\textbf{uuid}:to create random image name if images don't have  \\ 
+\textbf{time}:to check elapsed times \\ 
+\textbf{threading}: to download images with thread\\ 
+\textbf{hashlib}: to use hashlib -md5/sha256-  \\ 
+\textbf{multiprocessing}:  \\ 
+\textbf{ psutil}: to learn memory and cpu usage \\  
+\textbf{ subprocess} : to clean orphans \\ 
+\textbf{sys}: to animation
+
+\section{Assignments}
+Following subsections explains how different tasks solved step by step.
+
+\subsubsection{Create child process and using it}
+It is created child process with \textbf{fork()},  importing \textbf{os} library, we should first forking a process from parent. \\
+
+\begin{lstlisting}[language=Python, caption=Creating child process then writing its process id]
+def parent_child_process():# Create Parent and Child Process
+    pid = os.fork()                 
+
+    if(pid > 0):# n greater than 0  means parent process 
+	    print("parent process id: {}" .format(os.getpid()))
+
+    elif (pid == 0):# Pid is equal to 0 means child process
+      print("child process id: {}".format(os.getpid())) 
+\end{lstlisting} \\ \\
+
+\begin{lstlisting}[language=Python, caption= Output]
+parent process id: 254
+child process id: 260
+\end{lstlisting} \\ \\
+
+In addition to this; In this world it is possible to encounter an error. So we can avoid errors with try and except . \\
+Like below if we get error because of os to create pid , the program will exit with a message. ;
+
+\begin{lstlisting}[language=Python, caption= Output]
+try:
+		pid = os.fork()
+	except OSError:
+		exit("A problem occur when try to create pid.")
+\end{lstlisting}
+
+
+\subsubsection{Download files }
+Here, we can easily download files but we should use multiprocessing to gain time advantage. \\ \\
+
+\begin{lstlisting}[language=Python, caption= Downloading files ]
+def download_file2():
+    print("{} files downloading...\n".format(len(urls)))
+    for i in range(len(urls)):
+        download_file(urls[i], "file{}".format(i))
+        print("file{0} downloaded from\n{1}\n".format(i, urls[i]))
+\end{lstlisting} \\ \\
+
+Later , because of  I created a list in download file() function for downloading thread. This function gave an 
+\textbf{AttributeError}. To solve it I added try and except and it runs.
+
+
+\begin{lstlisting}[language=Python, caption= Try - Except]
+    try:
+        download_file(urls[i], "file{}".format(i))
+    except AttributeError:
+        print("it is running")
+\end{lstlisting} \\ \\
+
+
+\subsubsection{Create Directory }
+
+It is created directory named Images. I used \textbf{os} library for creating it,\textbf{ os.mkdir} is the method to create directory.
+
+\begin{lstlisting}[language=Python, caption= Create Directory]
+
+source = 'Images/'
+
+def createDirectory(path): 
+    access_rights = 0o777
+
+    try:
+        os.mkdir(path, access_rights) 
+    except OSError:
+        print('Creation of the directory %s failed' % path)
+    else:
+        print('Successfully created the directory %s' % path)
+
+\end{lstlisting} \\ \\
+
+\subsubsection{Change Directory }
+
+After we created directory, we can learn the  current working directory of a process with \textbf{ getcwd() } , Then we can change the directory with  \textbf{os.chdir} method.
+
+\begin{lstlisting}[language=Python, caption= Change Directory]
+def changeDirectory(getDirectory):  # Change Directory 
+    first_directory = os.getcwd()
+    os.chdir(getDirectory)
+    print('Directory Changed as', first_directory + '/' + getDirectory)
+\end{lstlisting} \\ \\
+
+And result is like below ; 
+
+\begin{lstlisting}[language=Python, caption= Output]
+Successfully created the directory Images/
+Directory Changed as /home/gizem/But/Images/
+Images folder contains 939 files.
+\end{lstlisting} \\ \\
+
+
+\subsubsection{Check Is There a File Exist}
+
+To check there is a file or not , it is used \textbf{path.exists()} method with importing\textbf{ os.path} . This function is boolean and it gives random file name if there is not exist a file name. Else splits it. 
+
+\begin{lstlisting}[language=Python, caption= Checking Path]
+def check_path_exist(file_name): 
+        isExist = path.exists(file_name) # path exists or not 
+        if isExist == 0: # if there is no file name;
+        		print ("directory not exists:" + str(path.exists('Images')))
+                file = file_name if file_name else str(uuid.uuid4()) # random file name 
+        else:
+                print ("directory exists:" + str(path.exists('Images')))
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption= Output1]
+directory exists:True
+\end{lstlisting}
+\begin{lstlisting}[language=Python, caption= Output2]
+directory not exists:False
+\end{lstlisting}
+
+ 
+\subsubsection{ Download  files with  using Multi Threading }
+Sending http request in python can make using \textbf{request} library. it is created a list for file name . We could check path.exist in this method . \\\\ \\\\
+
+\begin{lstlisting}[language=Python, caption=Downloading files]
+
+file_name_list = [] 
+
+def download_file(url, file_name_list, file_name = None, ):
+    r = requests.get(url, allow_redirects=True) #this method makes a request to a url
+    file = file_name if file_name else str(uuid.uuid4())
+    #check_file_exist(file_name)
+    open(file, 'wb').write(r.content) # open the downloaded file
+    file_name_list.append(file)
+\end{lstlisting}
+
+
+\subsubsection{Using Multi Threading }
+
+First I create a threads list to append the files with downloading using threading.
+ it is used 2 loops; one of them is in url to start download files , other is in threads list that  to join them.
+
+\begin{lstlisting}[language=Python, caption=Creating Threads]
+
+threads = []
+
+    def create_download_thread(urls,file_name_list):
+
+    for url in urls: #in urls array take loop
+        download_thread = threading.Thread(target=download_file,args=(url,file_name_list,))
+        download_thread.start()
+        threads.append(download_thread) #add downloaded threads to list
+        
+    for thread in threads:
+        thread.join()
+
+proc = Process(target=create_download_thread,args=(urls,file_name_list,))
+proc.start()
+proc.join()
+
+\end{lstlisting}
+
+When you are downloading files with thread that will be occur in screen:
+
+\begin{lstlisting}[language=Python, caption=Output]
+/5 files downloading...
+
+5 files downloading...
+
+5 files downloading...
+
+5 files downloading...
+
+5 files downloading...
+\end{lstlisting}
+
+
+\subsubsection{Clear orphan process}
+
+We can avoid the orphan process if we know the place that we can use os.wait() . To create a Clear Orphan  is more logical if it is hard to find the line for avoiding. The code below it is used subprocess library. An you can see the function cleaned orphans in output.
+
+\begin{lstlisting}[language=Python, caption= Clear Orphans ]
+def clear_orphans(): 
+  process= subprocess.Popen( ('ls', '-l', '/tmp'), stdout=subprocess.PIPE)
+  for line in process.stdout:
+        pass
+    
+  subprocess.call( ('ps', '-l') )
+  process.wait()
+  print( "clearing...\n")
+  subprocess.call( ('ps', '-l') )
+
+\end{lstlisting}
+
+Then it clears orphans like this:
+
+\begin{lstlisting}[language=Python, caption= Example Output of Clearing Orphans ]
+F S   UID     PID    PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000      98       1  4  80   0 - 278139 wait  pts/0    00:00:00 prybar-python3
+4 Z  1000     104      98  0  80   0 -     0 -      pts/0    00:00:00 ls <defunct>
+4 R  1000     105      98  0  80   0 -  7426 -      pts/0    00:00:00 ps
+after wait
+F S   UID     PID    PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000      98       1  4  80   0 - 278139 wait  pts/0    00:00:00 prybar-python3
+0 R  1000     111      98  0  80   0 -  7426 -      pts/0    00:00:00 ps
+\end{lstlisting}
+
+
+
+\subsubsection{Find Duplicates }
+
+
+\begin{lstlisting}[language=Python, caption= Find Duplicate ]
+
+def findDuplicates():  
+    for index, filename in enumerate(os.listdir('.')):  #count each iteration
+        if os.path.isfile(filename): #used path library and checked
+            index = filename
+            with open(filename, 'rb') as f: #open file 
+                image_hash = hashlib.md5(f.read()).hexdigest() #read with haslib
+
+            if image_hash not in hashes: 
+                hashes[image_hash] = index
+
+            else:
+                duplicates.append((index, hashes[image_hash]))#adding the duplicate list 
+                print('Image ' + hashes[image_hash] + ' is duplicate of Image ' + index)
+
+\end{lstlisting}
+
+\subsubsection{Remove Duplicates  }
+
+First, asked the question and took input from user, according to answer ; y or n remove files with \textbf{os}  library. I write this algorithm but there is \textbf{TypeError}. 
+
+\begin{lstlisting}[language=Python, caption= Remove Duplicates ]
+def remove_dup():
+  print("Do you want to delete duplicate images? [y/n]")             
+  while(True):
+    remove = input("Please enter the command number:\n")  
+    if(remove == "y"): 
+        files_list = os.listdir()#list of the all files located
+        
+      #delete files after printing:
+        for index in duplicates:
+          index = 0
+          os.remove(files_list[index]) ##remove duplicate file
+
+    else:
+      print("you didn't delete duplicte images")
+\end{lstlisting}
+
+
+\begin{lstlisting}[language=Python, caption= An Error ]
+TypeError: list indices must be integers or slices, not str
+\end{lstlisting}
+
+\subsubsection{CPU Count}
+
+It is checked the system and learn the number of CPU cores. and use  \textbf{cpu count() } method to create n processes if there are n cores with using  \textbf{multiprocessing} library but it is also possible to search\textbf{ cpu count()} with \textbf{ os }library.
+
+\begin{lstlisting}[language=Python, caption= CPU Count ]
+
+print("The number of cpu count is:",multiprocessing.cpu_count())
+
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption=  Output ]
+The number of cpu count is: 4
+\end{lstlisting}
+
+\textbf{Cpu Count in Multiprocessing}
+
+ Using Pool() it would meaningless to use more than your cpu count.  So it used os.cpu count() as an argument,because your OS can only use how much you have. 
+
+\begin{lstlisting}[language=Python, caption=  n process if there are n cores ]
+with multiprocessing.Pool(os.cpu_count()) as Pool:
+\end{lstlisting}
+
+\subsubsection{Creating Multiprocess}
+Before continue with our task we should know to use multiprocesses. Multiprocesses run at a same time. So let's create a multiprocess using \textbf{multiprocessing} library.
+
+\\Above code create a process pool to call function. Then mapping them with a function and parameter. And the output is:\\
+
+\begin{lstlisting}[language=Python, caption=How to create multiprocess example]
+    import multiprocessing
+    import time # this is for simulating
+    
+    def do_staff(second):
+        print(f"do_staff function starts with parameter: {second}")
+        time.sleep(second)
+        print("do_staff function ends")
+        
+    if __name == "__main__":
+        processPool = multiprocessing.Pool()
+        processPool.map(do_staff, [1,2,3,4])
+\end{lstlisting}
+
+\subsubsection{Creating Multiprocess for our task}
+First let's download files using \textbf{multiprocessing} library.\\
+
+\begin{lstlisting}[language=Python, caption=Download File using Multiprocess]
+    processPool = multiprocessing.Pool()
+    
+    # Assume that "...." end of the urls
+    request_urls = [
+    "http://wiki.netseclab.mu.edu.tr/images/thum.....",
+    "https://upload.wikimedia.org/wikipedia/tr/9....",
+    "https://upload.wikimedia.org/wikipedia/c....",
+    "http://wiki.netseclab.mu.edu.tr/images/thum....",
+    "https://upload.wikimedia.org/wikipedia/commons...."]
+    
+    processPool.map(download_file, request_urls)
+\end{lstlisting}
+
+
+\subsubsection{Starmap }
+
+It is used duplicate first list and duplicate Finder function to find duplicate files with  multiprocessing .\\\\\\\\\\
+
+\begin{lstlisting}[language=Python, caption=Starmap]
+
+    with multiprocessing.Pool(os.cpu_count()) as Pool:
+      
+        list_duplicate = Pool.starmap(duplicateFinder,([duplicate_first[0],duplicate_first],[duplicate_first[1],duplicate_first],[duplicate_first[2],duplicate_first],[duplicate_first[3],duplicate_first],[duplicate_first[4],duplicate_first]))
+   
+\end{lstlisting}
+
+\\It is used \textbf{starmap} above code. Because built-in \textbf{map} function is taking just one parameter to send function as a parameter, but in our case we should send two parameter to function. So we used \textbf{starmap} to send two parameter using \textbf{repeat} arguments.\\
+
+\subsubsection{Hashlib}
+
+The fuction that hashed files.
+
+\begin{lstlisting}[language=Python, caption=Hash Generator Function]
+    from hashlib import md5 
+    
+    def takegethash():  
+    for index, filename in enumerate(os.listdir('.')):
+        if os.path.isfile(filename):
+            index = filename
+            with open(filename, 'rb') as f:
+                image_hash = hashlib.md5(f.read()).hexdigest()
+            duplicate_first.append((index, image_hash))
+
+   
+\end{lstlisting}
+
+\subsubsection{Signal}
+
+ First; we should know the usage of signal ; Like below in this example it is used for waiting with  \textbf{time.sleep(3)}. 
+ 
+ \begin{lstlisting}[language=Python, caption=Signal]
+ import signal
+import os
+import time
+
+def receive_signal(signum, stack):
+    print 'Received:', signum
+
+signal.signal(signal.SIGUSR1, receive_signal)
+signal.signal(signal.SIGUSR2, receive_signal)
+
+print 'My PID is:', os.getpid()
+
+while True:
+    print 'Waiting...'
+    time.sleep(3)
+\end{lstlisting}
+
+\subsubsection{General Errors that I face with}
+
+\textbf{IndentationError:} unindent does not match any outer indentation level \\   
+\textbf{solution:} it is about tab key, just fixed spaces \\ \\
+\textbf{TabError: }inconsistent use of tabs and spaces in indentation  \\
+\textbf{solution:}Make a search and replace to replace all tabs with 4 spaces. \\ \\
+\textbf{NameError:} name 'threading' is not defined \\
+\textbf{solution:}just forgot import thread  \\ \\
+\textbf{UnboundLocalError: }local variable 'file names' referenced before assignment \\ \\
+\textbf{IndentationError:} expected an indented bloc \\\\
+\textbf{NameError: }name 'subprocess' is not defined \\
+\textbf{solution:} just import subprocess. \\ \\
+\textbf{AttributeError:} 'str' object has no attribute 'append' \\ \\
+\textbf{SyntaxError:} invalid syntax \\ 
+ \textbf{AttributeError}  file name list.append(file) \\ 
+ \textbf{solution:} I used try-except. \\ \\
+ \textbf{IndentationError:} unindent does not match any outer indentation level
+ \textbf{solution:}there might be spaces mixed in with your tabs. \\ \\ 
+\textbf{ IndexError:} list index out of range \\ 
+\textbf{UnboundLocalError:} local variable 'filehash' referenced before assignment \\ 
+\textbf{TypeError: }list indices must be integers or slices, not str\\
+
+\section{Memory}
+
+\subsubsection{Available Memory  }
+
+\begin{lstlisting}[language=Python, caption=  Available memory]
+def available_memory() -> int:
+    # open this file for memory information  
+    with open('/proc/meminfo', 'r') as mem:
+        ret = {}
+        free = 0
+        for i in mem:
+            sline = i.split()
+            if str(sline[0]) == 'MemTotal:':
+                ret['total'] = int(sline[1])
+            elif str(sline[0]) in ('MemFree:', 'Buffers:', 'Cached:'):
+                free += int(sline[1])
+        return free
+
+\end{lstlisting}
+
+\subsubsection{Wait Until Memory  is Available}
+
+With this function we call the available memory function back and wait until memory is available. 
+
+\begin{lstlisting}[language=Python, caption=  Waiting Available memory]
+def wait_until_memory_is_available():
+    while True:  # wait until memory becomes available
+        print("memory is available")
+        available_memory_mb = available_memory() / 1000
+        if available_memory_mb < required_memory_mb:  
+            print(
+                "memory is not enough! Available: {} MB | Required: {} MB".format(available_memory_mb, required_memory_mb))
+            time.sleep(1)  # wait 
+        else:
+            return  
+
+\end{lstlisting}
+
+We used this data above:\\
+
+\begin{lstlisting}[language=Python, caption=  Data that I should have]
+required_memory_mb = 30  # minimum required amount of memory in mb
+hash_buffer_size = 30000  # buffer size in bytes 
+movie_file_path = None  #  the movie file path is not exist 
+\end{lstlisting}
+
+\subsubsection{The output without psutil library}
+I just access any Memory Information with a class FreeMemLinux(object) without importing \textbf{psutil} library. You can see some memory informations below.
+
+\begin{lstlisting}[language=Python, caption= Output]
+
+Total Memory: 26694612 
+
+Used Memory: 20619100 
+
+Free Memory: 24546296 
+
+Total Memory (MB): 26068.95703125 MB
+
+Used Memory (MB): 20135.83984375 MB
+
+Free Memory (MB): 23970.9921875 MB
+
+Percentage of Total Memory: 1.0 %
+
+Percentage ofUsed Memory: 0.7724068062873511 %
+
+Percentage ofFree Memory: 0.9195224864103663 %
+    
+\end{lstlisting}
+
+\subsubsection{Checking Memory and CPU with Psutil library}
+
+I realized that \textbf{psutil} is a great library for checking cpu and memory like below , without psutil we need to write a lot of functions with object orianted.
+
+
+\begin{lstlisting}[language=Python, caption= ]
+
+max_cpu_percent = 50
+max_memory_percent = 50
+    
+print(psutil.cpu_times())
+
+def cpu_usage():
+  print("CPU Percent="+psutil.cpu_percent(interval=1),"\n")
+  cpu_percent = psutil.cpu_percent(interval=1)
+  if(cpu_percent > max_cpu_percent):
+      print("Warning")
+      print("CPU Usage Greter than 50%")
+    
+def memory_usage():
+  print(psutil.virtual_memory())
+  mem =  psutil.virtual_memory()
+
+  print("Memory Percent="+str(mem.percent))
+  if(mem.percent > max_memory_percent):
+      print("Memory Usage Greter than 50%")
+    
+   
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption=Output ]
+
+/svmem(total=27335290880, available=20669296640, percent=24.4, used=8078446592, free=12509163520, active=7963410432, inactive=3783192576, buffers=658960384, cached=6088720384, shared=22503424, slab=2435268608)
+
+Memory Percent=24.4
+
+CPU Percent=71.7
+
+\end{lstlisting}
+
+\subsubsection{Take a movie file (1GB) in your disk and try to hash it. How can you handle when hashing files that don't fit in the memory}
+
+\begin{lstlisting}[language=Python, caption= Downloading huge data ]
+def movie_file():
+  if movie_file_path:
+        movie_hash = takegethash(movie_file_path)
+        print("The hash of the movie using {} byte chunks: {}".format(hash_buffer_size, movie_hash))
+
+    print("\nExiting...")
+
+    print("Exiting..."
+    \end{lstlisting}
+    
+    In addition to this ;  for huge file you can use this chunk  function .
+    
+    \begin{lstlisting}[language=Python, caption= Chunk is for huge files ]
+    #If files are huge ... use this
+def read_chunk(fobj, chunk_size = 2048):
+    """ Files can be huge so read them in chunks of bytes. """
+    while True:
+        chunk = fobj.read(chunk_size)
+        if not chunk:
+            return
+        yield chunk
+        \end{lstlisting}
+
+\section{Time}
+
+You can clearly see that downloading with thread gives us time advantage.
+
+\begin{lstlisting}[language=Python, caption=Output Comparing Downloading Process ]
+
+Elapsed time with downloading :  2.233150005340576 
+Elapsed time with downloading with thread: 1.9434547424316406 
+
+\end{lstlisting}
+
+
+
+\begin{lstlisting}[language=Python, caption=Output of difference]
+    Elapsed time with serial threading is: 2.09sec
+    Elapsed time with multiprocessing is: 1.02sec
+\end{lstlisting}
+
+\\As you see the result multiprocessing is running in a half time of serial threading. Think that you have thousands of data to making something, multiprocessing will be make huge different for you.
+
+
+\section{Screen}
+\begin{lstlisting}[language=Python, caption=Function and driver code for duplicate image finding]
+print("\nWelcome Screen\n")
+print("------------------------------------------------------------")
+
+
+#On the Screen ..
+print("General Information")
+print("------------------------------------------------------------")
+print("Operating System Type: ", os.name, "\n") #Windows = nt / Linux = posix
+print("Your Destination: ", os.getcwd(), "\n") #current path
+print("CPU (Core) Count: ", str(os.cpu_count()), "\n") 
+print("Load avg:", os.getloadavg(), "\n")
+print("------------------------------------------------------------")
+print("Python version:")
+os.system("python3 --version")
+print("\n")
+print("Kernel version:")
+os.system("uname -srm")
+print("------------------------------------------------------------")
+print("\n \n  Please enter the command number to execute the script: \n"
+      " 1 : Create a New Parent and Child Process and Print Process ID (PID). \n"
+      " 2 : Check is there a directory or not. \n"
+      " 3 : Create a New Directory, Change Directory and Find count of File in it. "
+      " 4 : Change Directory \n"      
+      " 5 : Download the Files With Child Process.(and Avoid Orphans) \n"
+      " 6 : Download Files With Threads. \n"
+      " 7 : Clean Out the Orphans. \n"
+      " 8 : Find Duplicates. \n"
+      " 9 : Control Duplicate Files With Multi Processing. \n"
+      " 10 : Check Memory Usage and CPU Usage.\n"
+      " 11 : Memory Information.\n"
+      " 12 : Print Elapsed Time of Every Programs . \n"
+      " 13 : Is Memory Available , Wait it. \n"
+
+      " 0 : Exit the script.\n")
+print("------------------------------------------------------------\n")
+
+\end{lstlisting}
+
+
+
+
+\section{Design}
+
+\subsubsection{Process Bar}
+
+\begin{lstlisting}[language=Python, caption=Loading Animation]
+# Print iterations progress
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    # Print New Line on Complete
+    if iteration == total: 
+        print()
+
+# A List of Items
+items = list(range(0, 57))
+l = len(items)
+
+# Initial call to print 0% progress
+printProgressBar(0, l, prefix = 'Progress:', suffix = 'Complete', length = 50)
+for i, item in enumerate(items):
+    # Do stuff...
+    time.sleep(0.1)
+    # Update Progress Bar
+    printProgressBar(i + 1, l, prefix = 'Progress:', suffix = 'Complete', length = 50)
+    \end{lstlisting}
+    
+\subsubsection{Loading}
+If you didn't see this loading animation you will feel boring while waiting. I used \textbf{sys} for it . And it is just for loop and time.sleep()
+
+\begin{lstlisting}[language=Python, caption=Loading Animation]
+#Just an animation for loading 
+def animation():
+  animation = "|/-\\" 
+
+  for i in range(10):
+      time.sleep(0.1)
+      sys.stdout.write("\r" + animation[i % len(animation)])
+      sys.stdout.flush()
+  
+\end{lstlisting}
+
+
+
+\begin{lstlisting}[language=Python, caption=Driver Code ]
+while(True):
+  command = input("Please enter the command number:")
+  if(command==None or command=="" or command==" "):     #base case
+    print("Unvalid command number was sended.")
+ 
+  elif(command=="1"):
+    animation()
+    parent_child_process()
+. . .           # Assume that this 3 point is other commands 
+  elif(command=="5"):
+    animation()
+    print("\n")
+    pid = os.fork() 
+    if pid > 0: 
+        os.waitpid(pid, 0) #For avoiding orphan process 
+        print("")    
+    else: 
+        download_file2()
+. . .   
+  elif(command=="0"):
+    print("Exiting from the script.")
+    \end{lstlisting}
+
+\section{Results}
+
+As a result, we found duplicate files in given directory. But we should see the big fish at the above explaining. It is about multiprocessing. Finding duplicate files using multiprocessing makes difference than normal threading.
+
+
+\section{Conclusion}
+
+To sum up; operating system is a world , and you can lost in it even. I am so happy to have this project make up. I gain a lot of things.  
+
+\section{References}
+
+
+\begin{itemize}
+\item https://www.programiz.com/python-programming/time/sleep
+\item https://docs.python.org/2/library/multiprocessing.html
+\item https://www.w3schools.com/python/python try except.asp
+\item https://stackoverflow.com/questions/22029562/python...
+\item https://forum.yazbel.com/t/virgullu-noktali-sayilarin-kac-basamakli-olacagini-belirleme/724/3
+\item https://stackoverflow.com/questions/1131220/get-md5-hash-of-big-files-in-python
+\item https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
+\item https://stackoverflow.com/questions/276052/how-to-get-current-cpu-and-ram-usage-in-python
+\item https://stackoverflow.com/questions/82831/how-do-i-check-whether-a-file-exists-without-exceptions
+\item https://python.readthedocs.io/en/latest/library/os.path.html
+\item https://stackoverflow.com/questions/51520/how-to-get-an-absolute-file-path-in-python
+\item https://stackoverflow.com/questions/4446366/why-am-i-getting-indentationerror-expected-an-indented-block
+\item https://stackoverflow.com/questions/31607873/removing-orphan-letters-in-a-list-with-python
+\item https://www.youtube.com/watch?v=ozmL7TZ6Nm8
+\item https://stackoverflow.com/questions/17718449/determine-free-ram-in-python
+\item https://www.tutorialspoint.com/python/os_getcwd.htm
+\item https://stackoverflow.com/questions/32053618/how-to-to-terminate-process-using-pythons-multiprocessing
+\item https://www.tutorialspoint.com/python/os_getcwd.htm
+\item https://stackoverflow.com/questions/40672264/python-dynamic-multiprocessing-and-signalling-issues
+\item https://stackoverflow.com/questions/17718449/determine-free-ram-in-python
+\item https://stackoverflow.com/questions/2760652/how-to-kill-or-avoid-zombie-processes-with-subprocess-module/2761781
+\item https://www.cloudcity.io/blog/2019/02/27/things-i-wish-they-told-me-about-multiprocessing-in-python/
+\item https://www.cloudcity.io/blog/2019/02/27/things-i-wish-they-told-me-about-multiprocessing-in-python/
+\item https://realpython.com/python-memory-management/
+\item https://stackoverflow.com/questions/4446366/why-am-i-getting-indentationerror-expected-an-indented-block
+\item https://github.com/Kirk-H/Nagios-mem check/blob/master/mem check.py
+\item https://discuss.codecademy.com/t/typeerror-list-indices-must-be-integers-or-slices-not-str-problem/72521/5
+\item https://pymotw.com/2/multiprocessing/communication.html
+\item https://stackoverflow.com/questions/276052/how-to-get-current-cpu-and-ram-usage-in-python
+\end{itemize}
+
+
+
+
+
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
