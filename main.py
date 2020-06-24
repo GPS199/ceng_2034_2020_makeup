@@ -235,7 +235,6 @@ end_clean_orphans = time.time()
 
 print("The number of cpu count is:",multiprocessing.cpu_count())
 
-#3.2 : Control duplicate files within the downloaded files of your python code. You should do it by using multi processing techniques. 
 
 
 
@@ -347,6 +346,8 @@ end_find_duplicates_multiproc = time.time()
 
 
 
+
+
 def init_worker():
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
@@ -453,7 +454,10 @@ def cpu_usage():
   if(cpu_percent > max_cpu_percent):
       print("Warning")
       print("CPU Usage Greter than 50%")
-    
+ 
+ 
+ 
+ 
 def memory_usage():
   print(psutil.virtual_memory())
   mem =  psutil.virtual_memory()
@@ -531,7 +535,7 @@ print("\n \n  Please enter the command number to execute the script: \n"
       " 6 : Download Files With Threads. \n"
       " 7 : Clean Out the Orphans. \n"
       " 8 : Find Duplicates. \n"
-      #" 9 : Control Duplicate Files With Multi Thread. \n"
+#      " 9 : Control Duplicate Files With Multi Thread. \n"
       " 9 : Control Duplicate Files With Multi Processing. \n"
       " 10 : Check Memory Usage and CPU Usage. (psutil library)\n"
       " 11 : Memory Information.\n"
@@ -555,8 +559,8 @@ Elapsed_child_down = end_child - start_child
 Elapsed_thread_down = end_download_thread - start_download_thread
 Elapsed_clean_orphan = end_clean_orphans - start_clean_orphans
 Elapsed_find_duplicates = end_find_duplicates - start_find_duplicates
-#Elapsed_find_duplicates_thread = end_find_duplicates_thread - start_find_duplicates_thread
 Elapsed_find_duplicates_multiproc = end_find_duplicates_multiproc - start_find_duplicates_multiproc
+#Elapsed_find_duplicates_thread = end_find_duplicates_thread - start_find_duplicates_thread
 
 
 def print_times_of_programs():
@@ -566,8 +570,8 @@ def print_times_of_programs():
   print("\nElapsed time with downloading with thread:",round(Elapsed_thread_down,3),"\n")
   print("\nElapsed time with cleaning orphan process :",round(Elapsed_clean_orphan,3),"\n")
   print("\nElapsed time with finding duplicate files :",round(Elapsed_find_duplicates,3),"\n")
- # print("\nElapsed time with find duplicate images with multithread:",round(Elapsed_find_duplicates_thread,3),"\n")
   print("\nElapsed time with find duplicate images with multiprocessing:",round(Elapsed_find_duplicates_multiproc,3),"\n")
+ # print("\nElapsed time with find duplicate images with multithread:",round(Elapsed_find_duplicates_thread,3),"\n")
    
 
 
