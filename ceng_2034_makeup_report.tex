@@ -55,7 +55,7 @@ Today, this is the world of technology . Technology is developing, the needs hav
 
 
 \section{Introduction}
-Purpose of this report is learning how to use \textbf{multiprocessing} in our codes and how it will be increased our script performance.
+Purpose of this report is learning how to use \textbf{multiprocessing} ,\textbf{ threads }in our codes and how it will be increased our script performance.
 
 \section{General Information}
 
@@ -98,7 +98,7 @@ to check path exist or not  \\
 Following subsections explains how different tasks solved step by step.
 
 \subsubsection{Create child process and using it}
-It is created child process with \textbf{fork()},  importing \textbf{os} library, we should first forking a process from parent. \\
+It is easy to created child process with \textbf{fork()},  importing \textbf{os} library, we should first forking a process from parent. \\
 
 \begin{lstlisting}[language=Python, caption=Creating child process then writing its process id]
 def parent_child_process():# Create Parent and Child Process
@@ -117,7 +117,7 @@ child process id: 260
 \end{lstlisting} \\ \\
 
 In addition to this; In this world it is possible to encounter an error. So we can avoid errors with try and except . \\
-Like below if we get error because of os to create pid , the program will exit with a message. ;
+Like below if we get error because of\textbf{ os} to create\textbf{ pid} , the program will \textbf{exit} with a message. ;
 
 \begin{lstlisting}[language=Python, caption= Output]
 try:
@@ -128,7 +128,7 @@ try:
 
 
 \subsubsection{Download files }
-Here, we can easily download files but we should use multiprocessing to gain time advantage. \\ \\
+Here, we can easily download files but we should use multiprocessing to gain time advantage. I will show you the \textbf{time difference} of \textbf{finding duplicte files} and \textbf{finding duplicate files with threads}.\\ \\
 
 \begin{lstlisting}[language=Python, caption= Downloading files ]
 def download_file2():
@@ -138,7 +138,7 @@ def download_file2():
         print("file{0} downloaded from\n{1}\n".format(i, urls[i]))
 \end{lstlisting} \\ \\
 
-Later , because of  I created a list in download file() function for downloading thread. This function gave an 
+  This function calls \textbf{download file()}.  I created a list in \textbf{download file()} function for downloading thread.Because of it this function gave an 
 \textbf{AttributeError}. To solve it I added try and except and it runs.
 
 
@@ -149,13 +149,11 @@ Later , because of  I created a list in download file() function for downloading
         print("it is running")
 \end{lstlisting} \\ \\
 
-
 \subsubsection{Create Directory }
 
 It is created directory named Images. I used \textbf{os} library for creating it,\textbf{ os.mkdir} is the method to create directory.
 
 \begin{lstlisting}[language=Python, caption= Create Directory]
-
 source = 'Images/'
 
 def createDirectory(path): 
@@ -176,8 +174,8 @@ After we created directory, we can learn the  current working directory of a pro
 
 \begin{lstlisting}[language=Python, caption= Change Directory]
 def changeDirectory(getDirectory):  # Change Directory 
-    first_directory = os.getcwd()
-    os.chdir(getDirectory)
+    first_directory = os.getcwd() #current 
+    os.chdir(getDirectory)  #change it
     print('Directory Changed as', first_directory + '/' + getDirectory)
 \end{lstlisting} \\ \\
 
@@ -192,7 +190,7 @@ Images folder contains 939 files.
 
 \subsubsection{Check Is There a File Exist}
 
-To check there is a file or not , it is used \textbf{path.exists()} method with importing\textbf{ os.path} . This function is boolean and it gives random file name if there is not exist a file name. Else splits it. 
+To check there is a file or not , it is used \textbf{path.exists()} method with importing\textbf{ os.path} . This function is\textbf{ boolean }and it gives random file name if there is not exist a file name.
 
 \begin{lstlisting}[language=Python, caption= Checking Path]
 def check_path_exist(file_name): 
@@ -213,7 +211,7 @@ directory not exists:False
 
  
 \subsubsection{ Download  files with  using Multi Threading }
-Sending http request in python can make using \textbf{request} library. it is created a list for file name . We could check path.exist in this method . \\\\ \\\\
+Sending http request in python can make using \textbf{request} library. it is created\textbf{ a list }for file name . We could check path.exist in this method . \\\\ \\\\
 
 \begin{lstlisting}[language=Python, caption=Downloading files]
 
@@ -270,6 +268,7 @@ When you are downloading files with thread that will be occur in screen:
 
 \subsubsection{Clear orphan process}
 
+When parent finishes execution and exits while the child process is still executing ; it is called an orphan process.\\ 
 We can avoid the orphan process if we know the place that we can use os.wait() . To create a Clear Orphan  is more logical if it is hard to find the line for avoiding. The code below it is used subprocess library. An you can see the function cleaned orphans in output.
 
 \begin{lstlisting}[language=Python, caption= Clear Orphans ]
@@ -438,27 +437,53 @@ The fuction that hashed files.
    
 \end{lstlisting}
 
-\subsubsection{Signal}
 
- First; we should know the usage of signal ; Like below in this example it is used for waiting with  \textbf{time.sleep(3)}. 
- 
- \begin{lstlisting}[language=Python, caption=Signal]
- import signal
-import os
-import time
 
-def receive_signal(signum, stack):
-    print 'Received:', signum
+\subsubsection{Multiprocess and Signal}
 
-signal.signal(signal.SIGUSR1, receive_signal)
-signal.signal(signal.SIGUSR2, receive_signal)
+You can clearly see the usage of signal below. First we should import \textbf{signal }library,  In example it is used for except an error , you can use this library to interrupt something or with\textbf{ time.sleep() }etc. 
 
-print 'My PID is:', os.getpid()
-
-while True:
-    print 'Waiting...'
-    time.sleep(3)
+\begin{lstlisting}[language=Python, caption=Multiprocess and Signal Example]
+import signal
+...
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+...
+def main()
+    pool = multiprocessing.Pool(size, init_worker)
+    ...
+    except KeyboardInterrupt:
+        pool.terminate()
+        pool.join()
 \end{lstlisting}
+
+So I used signal library , and kill the process with \textbf{os.kill() }  if it takes any time that you choose instead of seconds parameter. 
+
+
+\begin{lstlisting}[language=Python, caption=Multiprocess and Signal Example]
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+def wait_timeout(proc, seconds):
+    start = time.time()
+    end = start + seconds
+    interval = min(seconds / 1000.0, .25)
+
+    while True:
+        pool = multiprocessing.Pool(os.cpu_count(), init_worker)
+        if pool is not None:
+          print("let live")
+          return Pool
+        if time.time() >= end:
+          print("kill")
+          os.kill(proc, signal.SIGTERM)
+          \end{lstlisting}
+
+
+
+
+
+
 
 \subsubsection{General Errors that I face with}
 
@@ -547,15 +572,15 @@ Free Memory (MB): 23970.9921875 MB
 
 Percentage of Total Memory: 1.0 %
 
-Percentage ofUsed Memory: 0.7724068062873511 %
+Percentage of Used Memory: 0.7724068062873511 %
 
-Percentage ofFree Memory: 0.9195224864103663 %
+Percentage of Free Memory: 0.9195224864103663 %
     
 \end{lstlisting}
 
 \subsubsection{Checking Memory and CPU with Psutil library}
 
-I realized that \textbf{psutil} is a great library for checking cpu and memory like below , without psutil we need to write a lot of functions with object orianted.
+I realized that \textbf{psutil} is a great library for checking cpu and memory like below , without psutil we need to write a lot of functions with object orianted.\\\\
 
 
 \begin{lstlisting}[language=Python, caption= ]
@@ -582,6 +607,8 @@ def memory_usage():
     
    
 \end{lstlisting}
+\\.
+\\.
 
 \begin{lstlisting}[language=Python, caption=Output ]
 
@@ -621,7 +648,7 @@ def read_chunk(fobj, chunk_size = 2048):
 
 \section{Time}
 
-You can clearly see that downloading with thread gives us time advantage.
+You can clearly see that downloading with thread gives us time advantage. 
 
 \begin{lstlisting}[language=Python, caption=Output Comparing Downloading Process ]
 
@@ -630,7 +657,7 @@ Elapsed time with downloading with thread: 1.9434547424316406
 
 \end{lstlisting}
 
-
+\\Comparison of thread and multiprocessing:
 
 \begin{lstlisting}[language=Python, caption=Output of difference]
     Elapsed time with serial threading is: 2.09sec
@@ -727,9 +754,9 @@ def animation():
   
 \end{lstlisting}
 
+I prefer to create a menu with Drive codes using if-else statements with taking input. \\\\\\
 
-
-\begin{lstlisting}[language=Python, caption=Driver Code ]
+\begin{lstlisting}[language=Python, caption=Driver Codes ]
 while(True):
   command = input("Please enter the command number:")
   if(command==None or command=="" or command==" "):     #base case
@@ -753,14 +780,11 @@ while(True):
     print("Exiting from the script.")
     \end{lstlisting}
 
-\section{Results}
-
-As a result, we found duplicate files in given directory. But we should see the big fish at the above explaining. It is about multiprocessing. Finding duplicate files using multiprocessing makes difference than normal threading.\\\\\\\\
 
 
 \section{Conclusion}
 
-To sum up; operating system is a world , and you can lost in it even. I am so happy to have this project make up. I gain a lot of things like\textbf{ child process },\textbf{ multiprocessing} and\textbf{ threads} . In addition to this I realized the importance of \textbf{memory} and \textbf{cpu} and being a computer engineer is using your system efficiently.\\\\\\\\
+To sum up; operating system is a world , and you can lost in it even. I am so happy to have this project make up. I gain a lot of things like\textbf{ child process },\textbf{ multiprocessing} and\textbf{ threads} . In addition to this I realized the importance of \textbf{memory} and \textbf{cpu} and being a computer engineer is using your system efficiently.\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 \section{References}
 
@@ -796,6 +820,7 @@ To sum up; operating system is a world , and you can lost in it even. I am so ha
 \item https://pymotw.com/2/multiprocessing/communication.html
 \item https://stackoverflow.com/questions/276052/how-to-get-current-cpu-and-ram-usage-in-python
 \item https://stackoverflow.com/questions/185936/how-to-delete-the-contents-of-a-folder
+\item https://stackoverflow.com/questions/1408356/keyboard-interrupts-with-pythons-multiprocessing-pool
 \end{itemize}
 
 
