@@ -46,7 +46,7 @@ duplicate_first = []
 
 
 
-required_memory_mb = 30  # minimum required amount of memory in Megabytes
+required_memory_mb = 30  # minimum required amount of memory in MB
 hash_buffer_size = 30000  # buffer size in bytes 
 movie_file_path = None  #  the movie file path is not exist 
 
@@ -334,6 +334,7 @@ def multiProcessFindDuplicates():
     for value in list_duplicate:
         if value != None:
             duplicates.append(value)
+
     print(duplicates)
     print('Image ' + duplicates[1][0] + ' and Image ' + duplicates[0][0] + ' are duplicated.') 
     print('Image ' + duplicates[3][0] + ' and Image ' + duplicates[2][0] + ' are duplicated.')
@@ -341,6 +342,35 @@ def multiProcessFindDuplicates():
 
 #multiProcessFindDuplicates()
 end_find_duplicates_multiproc = time.time()
+
+
+
+
+
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+def wait_timeout(proc, seconds):
+    start = time.time()
+    end = start + seconds
+    interval = min(seconds / 1000.0, .25)
+
+    while True:
+        pool = multiprocessing.Pool(os.cpu_count(), init_worker)
+        if pool is not None:
+          print("let live")
+          return Pool
+        if time.time() >= end:
+          print("kill")
+          os.kill(proc, signal.SIGTERM)
+
+
+
+
+
+
+
+
 
 
 
@@ -381,21 +411,7 @@ def multiThreadFindDuplicates(): # MultiThreading function the process
 
 
 
-def wait_timeout(proc, seconds):
-    """Wait for a process to finish, or raise exception after timeout"""
-    start = time.time()
-    end = start + seconds
-    interval = min(seconds / 1000.0, .25)
 
-    while True:
-        result = proc.poll()
-        if result is not None:
-            return result
-        if time.time() >= end:
-            raise RuntimeError("Process timed out")
-        time.sleep(interval)
-        
-#wait_timeout(p, seconds)
 
 
 
@@ -415,6 +431,11 @@ def read_chunk(fobj, chunk_size = 2048):
         if not chunk:
             return
         yield chunk
+
+
+
+
+
 
 
 #Memory and CPU Usage
@@ -517,6 +538,7 @@ print("\n \n  Please enter the command number to execute the script: \n"
       " 12 : Print Elapsed Time of Every Programs . \n"
       " 13 : Is Memory Available , Wait it. \n"
       " 14 : Remove File \n"
+      " 15 : Kill Process If Takes More Than 30 Seconds \n"
 
       " 0 : Exit the script.\n")
 print("------------------------------------------------------------\n")
@@ -789,6 +811,13 @@ while(True):
     print("\n")
     remove_file()
     print(" File Removed.")
+
+  elif(command=="15"):
+    animation()
+    print("\n")
+    wait_timeout(proc, 30)
+    
+
 
 
   elif(command=="0"):
