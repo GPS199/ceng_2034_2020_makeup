@@ -22,11 +22,20 @@
 4) Think about the previous questions. Your script should: 
 
 a. Check available memory of the system. (5 pts)
+
 b. Estimate what should be the minimum required memory. (5 pts) 
+
 c. Include the routine that will wait until the system frees that memory. (5 pts).
+
 d. Take a movie file (> 1GB) in your disk and try to hash it. How can you handle when hashing files that don't fit in the memory? (BONUS - 10 pts) 
  
-5) Write a report on what you did and you learnt during the assignment (20 points)  ● You should use this template and write the report by using Latex. https://www.overleaf.com/read/zqcfzrfkphfb  ● You should define the methods that you have written ● You should explain the results and conclusion 
+5) Write a report on what you did and you learnt during the assignment (20 points)  
+
+● You should use this template and write the report by using Latex. https://www.overleaf.com/read/zqcfzrfkphfb  
+
+● You should define the methods that you have written
+
+● You should explain the results and conclusion 
  
  
 Notes: 
