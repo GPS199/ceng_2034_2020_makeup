@@ -1,8 +1,9 @@
-# -ceng_2034_2020_makeup
+# ceng_2034_2020_makeup
 
-1) Create a new child process with syscall and print its PID. (5 pts) 2) Multi Threading: Child process should do the following: 
+1) Create a new child process with syscall and print its PID. (5 pts)
+
+2) Multi Threading: Child process should do the following: 
 ● Download the files via the given URL list. Should use multi threading for retrieving the files. Create n threads if there are n different elements in the url (10pts) 
- 
 ● Child process should check its status; that means if it understands that it is orphan, it should then remove the downloaded files at the system and then exit (10pts).  
  
 3) Multiprocessing (40 pts Total) 
