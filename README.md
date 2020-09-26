@@ -12,7 +12,9 @@
 
 ● Check the system and learn the number of CPU cores. Create n processes if there are n cores. (10 pts) 
 
-● Use processes for the correct task! ● Control duplicate files within the downloaded files of your python code. You should do it by using multi processing techniques. 
+● Use processes for the correct task! 
+
+● Control duplicate files within the downloaded files of your python code. You should do it by using multi processing techniques. 
 (Hint: you can use hashlib -md5/sha256- in python to check file checksum) (10 pts)
 
 ● The main process should check the other created  processes and if takes more than 30 seconds, kill those processes (by sending signal from the main process) (10 pts) 
@@ -42,13 +44,13 @@ Notes:
 
 ● If your final exam repo exists on the github then create a new branch name “makeup”. 
 If it does not exist, open a repo (github.com/username/ceng_2034_2020_makeup) and write your github user name in the document report. Also write it in the 
-following address: https://docs.google.com/spreadsheets/d/1r3YwfK6vYWgs7Oy6qFOiG-Zzqj3_QFcbvu _XNyWaelM/edit?usp=sharing  
+following address:
+
+https://docs.google.com/spreadsheets/d/1r3YwfK6vYWgs7Oy6qFOiG-Zzqj3_QFcbvu _XNyWaelM/edit?usp=sharing  
 
 ● Ensure that this repo is kept private until the deadline!  
 
 ● We will take your code from your GitHub, so you should have it there and we should see your progress from the commits. 
-
-(you can make your repo public after the deadline, only share it with the instructors: ​MSKUnetseclab, caesarsalad​) 
 
 ● Upload your code to your github account.
 
